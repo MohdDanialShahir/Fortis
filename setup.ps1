@@ -73,8 +73,14 @@ if ($LASTEXITCODE -ne 0) {
     }
 
     if (Test-Path "$venvPy") {
-        & $venvPy -m pip uninstall --disable-pip-version-check --yes llama_cpp_python 2>$null | Out-Null
-        $LASTEXITCODE = 0
+    try {
+        Invoke-Native {
+            & $venvPy -m pip uninstall --disable-pip-version-check --yes llama_cpp_python
+        } | Out-Null
+    }
+    catch {
+    }
+    $global:LASTEXITCODE = 0
     }
 
     if ($hasNvidia) {
